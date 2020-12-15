@@ -5,6 +5,7 @@ public class piece {
     int x;
     int y;
 
+
     public piece() {
 
     }
