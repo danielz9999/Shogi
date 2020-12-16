@@ -64,8 +64,9 @@ public class Board {
         int y = a.currentPole.coorY - 1;
         int c = b.coorX - 1;
         int d = b.coorY - 1;
-        System.out.println(c + " " + d);
+
         a.currentPole = vsechnyPole[c][d];
+        vsechnyPole[c][d].currentPiece.isTaken = true;
         vsechnyPole[x][y].currentPiece = new nullPiece();
         vsechnyPole[c][d].currentPiece = a;
         //poleUpdate(vsechnyPole[c][d]);

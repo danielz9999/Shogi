@@ -18,7 +18,8 @@ public class Graphics {
 
         g.gameSpace.vsechnyPole[4][4].currentPiece = new testPiece();
         g.gameSpace.vsechnyPole[4][4].whereAmI();
-
+        g.gameSpace.vsechnyPole[5][5].currentPiece = new testPiece();
+        g.gameSpace.vsechnyPole[4][4].whereAmI();
 
         plocha.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         plocha.setSize(800, 800);
@@ -41,12 +42,14 @@ public class Graphics {
                     public void actionPerformed(ActionEvent e) {
 
                         //System.out.println(g.isClicked);
+                        boolean saveFalsity = false;
+                        if (g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTest == false) {
+                            saveFalsity = true;
+                        }
                         //System.out.println(g.isMovePossible(buttons.x, buttons.y, g.possibleMoves(buttons.x, buttons.y)));
 
 
-
-
-                        if (!g.isClicked && g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTest == true) {
+                        if (!g.isClicked && g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTest == true && g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTaken != true) {
                             stareX = buttons.x;
                             stareY = buttons.y;
                             moveList = g.possibleMoves(stareX, stareY);
@@ -61,9 +64,12 @@ public class Graphics {
                             System.out.println("no good");
 
                         }
-                        if (g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTest == true) {
-
-                            g.isClicked = true;
+                        if (g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTest == true && g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTaken != true) {
+                            if (saveFalsity) {
+                                g.isClicked = false;
+                            } else {
+                                g.isClicked = true;
+                            }
                         } else {
                             g.isClicked = false;
                         }
@@ -74,6 +80,7 @@ public class Graphics {
             }
         }
         poleUpdate(g.gameSpace.vsechnyPole[4][4]);
+        poleUpdate(g.gameSpace.vsechnyPole[5][5]);
         plocha.setVisible(true);
 
 
@@ -85,13 +92,17 @@ public class Graphics {
         int x = p.coorX - 1;
         int y = p.coorY - 1;
 
-        if (p.currentPiece.isTest == true) {
+        if (p.currentPiece.isTest == true && !p.currentPiece.isTaken) {
             vsechnyButtons[x][y].setBackground(Color.BLACK);
             vsechnyButtons[x][y].setOpaque(true);
         } else if (p.currentPiece.isTest == false) {
             vsechnyButtons[x][y].setBackground(Color.RED);
             vsechnyButtons[x][y].setOpaque(true);
         }
+    }
+
+    public void takeFigurka() {
+
     }
 
     public static void main(String[] args) {

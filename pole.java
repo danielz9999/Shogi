@@ -1,9 +1,9 @@
 
 
 public class pole {
-    int coorX;
-    int coorY;
-    piece currentPiece;
+    public int coorX;
+    public int coorY;
+    public piece currentPiece;
 
     public pole (int indexA, int indexB, piece Piece) {
         coorX = indexA;

@@ -4,7 +4,9 @@ public class piece {
     boolean isTest;
     int x;
     int y;
-
+    int numberOfMoves;
+    String typFigurky;
+    boolean isTaken;
 
     public piece() {
 
