@@ -1,7 +1,5 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+//třída která se stará o JPanel plocha a o vytvoření a spravování políček
 
 
 public class Board {
@@ -59,6 +57,7 @@ public class Board {
         }
     }
 */
+    //funkce která hýbe s figurkami
     public void moveTo(piece a, pole b) {
         int x = a.currentPole.coorX - 1;
         int y = a.currentPole.coorY - 1;
@@ -74,11 +73,22 @@ public class Board {
 
     }
 
-    public static void main(String[] args) {
+ //pokus o přepsání moveTo2 funkce, momentálně nevyužita
+   /* public void moveTo2(pole a, pole b) {
+        int x = a.coorX - 1;
+        int y = a.coorY - 1;
+        int c = b.coorX - 1;
+        int d = b.coorY - 1;
 
-         Board board = new Board();
-
+        vsechnyPole[c][d] = a;
+        //vsechnyPole[c][d].currentPiece.isTaken = true;
+        vsechnyPole[c][d].currentPiece = a.currentPiece;
+        vsechnyPole[x][y] = new pole(x+1,y+1,new nullPiece());
 
     }
+
+
+    */
+
 
 }

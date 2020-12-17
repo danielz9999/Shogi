@@ -1,3 +1,5 @@
+//tato třída slouží k uložení dvojice souřadnic pro jednoduché porovnání v funkci moveTo() ve třídě board
+
 public class Dvojice {
     private int a;
     private int b;

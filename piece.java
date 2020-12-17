@@ -1,3 +1,5 @@
+//obecná parent třída všech figurek
+
 public class piece {
     String owner;
     pole currentPole;
@@ -7,6 +9,7 @@ public class piece {
     int numberOfMoves;
     String typFigurky;
     boolean isTaken;
+    boolean isNull;
 
     public piece() {
 

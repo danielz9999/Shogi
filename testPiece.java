@@ -1,4 +1,4 @@
-
+//prozatimní testovací třída,reprezentována černým čtverečkem, která se může hýbat do všech směrů o jedno pole
 
 
 public class testPiece extends piece {
@@ -7,6 +7,7 @@ public class testPiece extends piece {
         isTest = true;
         numberOfMoves = 8;
         isTaken = false;
+        isNull = false;
     }
     @Override
     public String toString() {

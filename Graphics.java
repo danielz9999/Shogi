@@ -3,24 +3,26 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+//klíčová a hlavní třída, stará se o zobrozování věci na JPanel plocha, spravuje tlačitka na obrazovce a prozatím zde má public static void main
 public class Graphics {
     GameRules g = new GameRules();
     JButton vsechnyButtons[][] = new TheButtons[9][9];
 
     JFrame plocha = new JFrame("Hrací plocha");
 
-    Dvojice[] moveList;
+    Dvojice[] moveList = null;
 
     int stareX;
     int stareY;
 
-    public Graphics() {
 
+    public Graphics() {
+        //vy generují se dvě figurky na polích 5,5 a 6,6
         g.gameSpace.vsechnyPole[4][4].currentPiece = new testPiece();
         g.gameSpace.vsechnyPole[4][4].whereAmI();
         g.gameSpace.vsechnyPole[5][5].currentPiece = new testPiece();
-        g.gameSpace.vsechnyPole[4][4].whereAmI();
-
+        g.gameSpace.vsechnyPole[5][5].whereAmI();
+        //nastavení JPanelu plocha
         plocha.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         plocha.setSize(800, 800);
         plocha.setLocationRelativeTo(null);
@@ -32,46 +34,33 @@ public class Graphics {
                 int k = j + 1;
 
 
-
+                //vytvoří se 81 tlačítka, která jsou rozmístěna na plochu v 9x9 síti
                 TheButtons buttons = new TheButtons(i, j);
                 vsechnyButtons[i][j] = buttons;
                 plocha.add(vsechnyButtons[i][j]);
                 System.out.println(buttons.x + " " + buttons.y);
+                //click event tlačítka
                 buttons.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-
-                        //System.out.println(g.isClicked);
-                        boolean saveFalsity = false;
-                        if (g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTest == false) {
-                            saveFalsity = true;
-                        }
-                        //System.out.println(g.isMovePossible(buttons.x, buttons.y, g.possibleMoves(buttons.x, buttons.y)));
-
-
-                        if (!g.isClicked && g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTest == true && g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTaken != true) {
-                            stareX = buttons.x;
-                            stareY = buttons.y;
-                            moveList = g.possibleMoves(stareX, stareY);
-                            System.out.println("proběhlo");
-                        }
-                        if (g.isMovePossible(buttons.x, buttons.y, moveList) && g.isClicked) {
+                        if (moveList != null && g.isMovePossible(buttons.x, buttons.y, moveList)) {
                             g.gameSpace.moveTo(g.gameSpace.vsechnyPole[stareX][stareY].currentPiece, g.gameSpace.vsechnyPole[buttons.x][buttons.y]);
                             poleUpdate(g.gameSpace.vsechnyPole[stareX][stareY]);
                             poleUpdate(g.gameSpace.vsechnyPole[buttons.x][buttons.y]);
-                            System.out.println("all good");
-                        } else {
-                            System.out.println("no good");
-
+                            moveList = null;
+                        } else if (moveList != null && !g.isMovePossible(buttons.x, buttons.y, moveList) && !g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isNull == true) {
+                            stareX = buttons.x;
+                            stareY = buttons.y;
+                            moveList = g.possibleMoves(stareX, stareY);
+                        } else if (moveList == null && g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isNull == false) {
+                            stareX = buttons.x;
+                            stareY = buttons.y;
+                            moveList = g.possibleMoves(stareX, stareY);
                         }
-                        if (g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTest == true && g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isTaken != true) {
-                            if (saveFalsity) {
-                                g.isClicked = false;
-                            } else {
-                                g.isClicked = true;
-                            }
-                        } else {
-                            g.isClicked = false;
+
+                        else if (g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isNull == true) {
+                            moveList = null;
+
                         }
 
                     }
@@ -87,7 +76,7 @@ public class Graphics {
 
 
     }
-
+    //kontroluje zda má pole figurku, pokud ano tak ji zobrazí
     public void poleUpdate(pole p) {
         int x = p.coorX - 1;
         int y = p.coorY - 1;
@@ -101,9 +90,7 @@ public class Graphics {
         }
     }
 
-    public void takeFigurka() {
 
-    }
 
     public static void main(String[] args) {
 ;

@@ -1,4 +1,4 @@
-
+//třída se stará o dodržení pravidel
 
 public class GameRules {
     //private pole[][] b = new pole[8][8];
@@ -10,7 +10,7 @@ public class GameRules {
     public GameRules() {
         isClicked  = false;
     }
-
+    //generuje pole dvojic souřadnic políček, na které se daná figurka z daného pole může hýbat
     public Dvojice[] possibleMoves(int x, int y) {
         System.out.println(x + " " + y);
         System.out.println(gameSpace.vsechnyPole[x][y].currentPiece.toString());
@@ -45,7 +45,7 @@ public class GameRules {
     /*public void getBoard(pole[][] p) {
         //b = p;
     */}
-
+    //funkce, která zjišťuje, zda je tah možný tím, že zkoumá, jestli jsou souřadnice daného cílového políčka součástí pole souřadic možnýhc pohybů původního políčka
     public boolean isMovePossible(int x, int y, Dvojice[] p) {
         for (int i = 0; i < 8; i++) {
 
