@@ -2,6 +2,7 @@
 
 public class nullPiece extends piece {
     public nullPiece() {
+        super(2);
         isTest = false;
         isNull = true;
     }

@@ -17,11 +17,16 @@ public class Graphics {
 
 
     public Graphics() {
-        //vy generují se dvě figurky na polích 5,5 a 6,6
-        g.gameSpace.vsechnyPole[4][4].currentPiece = new testPiece();
+        g.currentTurn = 0;
+        //generování figurek
+        g.gameSpace.vsechnyPole[4][4].currentPiece = new testPiece(1);
         g.gameSpace.vsechnyPole[4][4].whereAmI();
-        g.gameSpace.vsechnyPole[5][5].currentPiece = new testPiece();
+        g.gameSpace.vsechnyPole[5][5].currentPiece = new testPiece(0);
         g.gameSpace.vsechnyPole[5][5].whereAmI();
+        g.gameSpace.vsechnyPole[1][1].currentPiece = new Pawn(1);
+        g.gameSpace.vsechnyPole[1][1].whereAmI();
+        g.gameSpace.vsechnyPole[1][7].currentPiece = new Pawn(0);
+        g.gameSpace.vsechnyPole[1][7].whereAmI();
         //nastavení JPanelu plocha
         plocha.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         plocha.setSize(800, 800);
@@ -34,21 +39,29 @@ public class Graphics {
                 int k = j + 1;
 
 
-                //vytvoří se 81 tlačítka, která jsou rozmístěna na plochu v 9x9 síti
+                //vytvoří se 81 tlačítek, která jsou rozmístěna na plochu v 9x9 síti
                 TheButtons buttons = new TheButtons(i, j);
                 vsechnyButtons[i][j] = buttons;
                 plocha.add(vsechnyButtons[i][j]);
-                System.out.println(buttons.x + " " + buttons.y);
+                //System.out.println(buttons.x + " " + buttons.y);
                 //click event tlačítka
                 buttons.addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (moveList != null && g.isMovePossible(buttons.x, buttons.y, moveList)) {
+
+                        if (moveList != null && g.isMovePossible(buttons.x, buttons.y, moveList, g.gameSpace.vsechnyPole[stareX][stareY].currentPiece.numberOfMoves) && g.gameSpace.vsechnyPole[stareX][stareY].currentPiece.owner == g.currentTurn) {
                             g.gameSpace.moveTo(g.gameSpace.vsechnyPole[stareX][stareY].currentPiece, g.gameSpace.vsechnyPole[buttons.x][buttons.y]);
                             poleUpdate(g.gameSpace.vsechnyPole[stareX][stareY]);
                             poleUpdate(g.gameSpace.vsechnyPole[buttons.x][buttons.y]);
                             moveList = null;
-                        } else if (moveList != null && !g.isMovePossible(buttons.x, buttons.y, moveList) && !g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isNull == true) {
+                            if (g.currentTurn == 0) {
+                                    g.currentTurn = 1;
+
+                            } else if (g.currentTurn == 1) {
+                                    g.currentTurn = 0;
+
+                            }
+                        } else if (moveList != null && !g.isMovePossible(buttons.x, buttons.y, moveList, g.gameSpace.vsechnyPole[stareX][stareY].currentPiece.numberOfMoves) && !g.gameSpace.vsechnyPole[buttons.x][buttons.y].currentPiece.isNull == true) {
                             stareX = buttons.x;
                             stareY = buttons.y;
                             moveList = g.possibleMoves(stareX, stareY);
@@ -63,6 +76,8 @@ public class Graphics {
 
                         }
 
+
+
                     }
                 });
 
@@ -70,9 +85,13 @@ public class Graphics {
         }
         poleUpdate(g.gameSpace.vsechnyPole[4][4]);
         poleUpdate(g.gameSpace.vsechnyPole[5][5]);
+        poleUpdate(g.gameSpace.vsechnyPole[1][1]);
+        poleUpdate(g.gameSpace.vsechnyPole[1][7]);
         plocha.setVisible(true);
-
-
+        /*System.out.println(g.gameSpace.vsechnyPole[4][4].currentPiece.owner);
+        System.out.println(g.gameSpace.vsechnyPole[5][5].currentPiece.owner);
+        System.out.println(g.currentTurn);
+        */
 
 
     }
@@ -84,9 +103,11 @@ public class Graphics {
         if (p.currentPiece.isTest == true && !p.currentPiece.isTaken) {
             vsechnyButtons[x][y].setBackground(Color.BLACK);
             vsechnyButtons[x][y].setOpaque(true);
-        } else if (p.currentPiece.isTest == false) {
+        } else if (p.currentPiece.isNull == true) {
             vsechnyButtons[x][y].setBackground(Color.RED);
             vsechnyButtons[x][y].setOpaque(true);
+        } else {
+            vsechnyButtons[x][y].setBackground(Color.BLUE);
         }
     }
 

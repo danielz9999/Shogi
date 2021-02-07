@@ -3,11 +3,13 @@
 
 public class testPiece extends piece {
 
-    public testPiece() {
+    public testPiece(int hrac) {
+        super(hrac);
         isTest = true;
         numberOfMoves = 8;
         isTaken = false;
         isNull = false;
+
     }
     @Override
     public String toString() {
