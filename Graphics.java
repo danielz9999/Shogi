@@ -23,10 +23,6 @@ public class Graphics {
         g.gameSpace.vsechnyPole[4][4].whereAmI();
         g.gameSpace.vsechnyPole[5][5].currentPiece = new testPiece(0);
         g.gameSpace.vsechnyPole[5][5].whereAmI();
-        g.gameSpace.vsechnyPole[1][1].currentPiece = new Pawn(1);
-        g.gameSpace.vsechnyPole[1][1].whereAmI();
-        g.gameSpace.vsechnyPole[1][7].currentPiece = new Pawn(0);
-        g.gameSpace.vsechnyPole[1][7].whereAmI();
         //nastavení JPanelu plocha
         plocha.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         plocha.setSize(800, 800);
@@ -85,9 +81,14 @@ public class Graphics {
         }
         poleUpdate(g.gameSpace.vsechnyPole[4][4]);
         poleUpdate(g.gameSpace.vsechnyPole[5][5]);
-        poleUpdate(g.gameSpace.vsechnyPole[1][1]);
-        poleUpdate(g.gameSpace.vsechnyPole[1][7]);
+        makePawn(1,1,1);
+        makePawn(7,7,0);
+        makeKnight(1,4,1);
+        makeSilverGeneral(2,2,0);
+        makeSilverGeneral(2,8,1);
+        makeGoldGeneral(3,3, 1);
         plocha.setVisible(true);
+
         /*System.out.println(g.gameSpace.vsechnyPole[4][4].currentPiece.owner);
         System.out.println(g.gameSpace.vsechnyPole[5][5].currentPiece.owner);
         System.out.println(g.currentTurn);
@@ -106,12 +107,37 @@ public class Graphics {
         } else if (p.currentPiece.isNull == true) {
             vsechnyButtons[x][y].setBackground(Color.RED);
             vsechnyButtons[x][y].setOpaque(true);
+        } else if (p.currentPiece.numberOfMoves == 2) {
+            vsechnyButtons[x][y].setBackground(Color.DARK_GRAY);
+        } else if (p.currentPiece.numberOfMoves == 5) {
+            vsechnyButtons[x][y].setBackground(Color.cyan);
+        }  else if (p.currentPiece.numberOfMoves == 6) {
+            vsechnyButtons[x][y].setBackground(Color.magenta);
         } else {
             vsechnyButtons[x][y].setBackground(Color.BLUE);
         }
     }
 
-
+    public void makePawn(int x, int y, int owner) {
+        g.gameSpace.vsechnyPole[x][y].currentPiece = new Pawn(owner);
+        g.gameSpace.vsechnyPole[x][y].whereAmI();
+        poleUpdate(g.gameSpace.vsechnyPole[x][y]);
+    }
+    public void makeKnight(int x, int y, int owner) {
+        g.gameSpace.vsechnyPole[x][y].currentPiece = new Knight(owner);
+        g.gameSpace.vsechnyPole[x][y].whereAmI();
+        poleUpdate(g.gameSpace.vsechnyPole[x][y]);
+    }
+    public void makeSilverGeneral(int x, int y, int owner) {
+        g.gameSpace.vsechnyPole[x][y].currentPiece = new SilverGeneral(owner);
+        g.gameSpace.vsechnyPole[x][y].whereAmI();
+        poleUpdate(g.gameSpace.vsechnyPole[x][y]);
+    }
+    public void makeGoldGeneral(int x, int y, int owner) {
+        g.gameSpace.vsechnyPole[x][y].currentPiece = new GoldGeneral(owner);
+        g.gameSpace.vsechnyPole[x][y].whereAmI();
+        poleUpdate(g.gameSpace.vsechnyPole[x][y]);
+    }
 
     public static void main(String[] args) {
 ;
