@@ -1,30 +1,24 @@
-//obecná parent třída všech figurek
-
 public class piece {
-    public int owner;
-    pole currentPole;
-    boolean isTest;
-    int x;
-    int y;
-    int numberOfMoves;
-    String typFigurky;
-    boolean isTaken;
-    boolean isNull;
-    Dvojice[] moves = new Dvojice[numberOfMoves];
+    private int x;
+    private int y;
+    private int owner;
 
-    public piece(int hrac) {
-        owner = hrac;
+    public piece(int player, int xCor, int yCor) {
+        owner = player;
+        x = xCor;
+        y = yCor;
     }
-    public void whereIsPiece() {
-        x = this.currentPole.coorX;
-        y = this.currentPole.coorY;
+    public void moveTo(int destinationX, int destinationY) {
+        x = destinationX;
+        y = destinationY;
     }
-    public void polePieceUpdate() {
-        currentPole.currentPiece = this;
+    public int getX() {
+        return x;
     }
-
-   public Dvojice[] getMoves(int x, int y) {
-        Dvojice[] ara = new Dvojice[0];
-        return ara;
-   }
+    public int getY() {
+        return y;
+    }
+    public String getType() {
+        return null;
+    }
 }
