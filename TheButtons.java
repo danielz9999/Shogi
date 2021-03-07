@@ -1,16 +1,16 @@
 import javax.swing.*;
 
 public class TheButtons extends JButton {
-    private int a;
-    private int b;
+    private int partA;
+    private int partB;
     public TheButtons(int first, int second) {
-        a = first;
-        b = second;
+        partA = first;
+        partB = second;
     }
     public int getA() {
-        return a;
+        return partA;
     }
     public int getB() {
-        return b;
+        return partB;
     }
 }

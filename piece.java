@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class piece {
     private int x;
     private int y;
@@ -20,5 +22,28 @@ public class piece {
     }
     public String getType() {
         return null;
+    }
+    public int getOwner() {
+        return owner;
+    }
+
+    public ArrayList<Coordinates> getMoves(int x, int y, ArrayList<Coordinates> whitePositions, ArrayList<Coordinates> blackPositions) {
+        return null;
+    }
+    public ArrayList<Coordinates> friendBlock(ArrayList<Coordinates> moves, ArrayList<Coordinates> friendlyPositions) {
+        ArrayList<Coordinates> finalMoves;
+        for (var i = 0; i < moves.size(); i++) {
+            for (int j = 0; j < friendlyPositions.size(); j++) {
+                if (moves.get(i).firstHalf() == friendlyPositions.get(j).firstHalf() && moves.get(i).secondHalf() == friendlyPositions.get(j).secondHalf()) {
+                    moves.remove(i);
+                    i = i - 1;
+                    if (moves.size() == 0) {
+                        break;
+                    }
+
+                }
+            }
+        }
+        return moves;
     }
 }
