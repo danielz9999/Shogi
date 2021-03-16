@@ -32,14 +32,19 @@ public class piece {
     }
     public ArrayList<Coordinates> friendBlock(ArrayList<Coordinates> moves, ArrayList<Coordinates> friendlyPositions) {
         ArrayList<Coordinates> finalMoves;
-        for (var i = 0; i < moves.size(); i++) {
-            for (int j = 0; j < friendlyPositions.size(); j++) {
+
+        for (int i = 0; i < moves.size(); i++) {
+            for (int j = 0; j < friendlyPositions.size() && i < moves.size(); j++) {
+
                 if (moves.get(i).firstHalf() == friendlyPositions.get(j).firstHalf() && moves.get(i).secondHalf() == friendlyPositions.get(j).secondHalf()) {
                     moves.remove(i);
-                    i = i - 1;
+                    //i = i - 1;
+                    j = 0;
                     if (moves.size() == 0) {
                         break;
                     }
+
+                } else {
 
                 }
             }
