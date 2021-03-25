@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class Lancer extends piece{
     public Lancer(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
+        setUpgradePiece("golden");
     }
     @Override
     public String getType() {

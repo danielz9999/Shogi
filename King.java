@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class King extends piece{
     public King(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
+        setUpgradePiece("non upgradable");
     }
     @Override
     public String getType() {

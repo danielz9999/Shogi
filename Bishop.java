@@ -1,9 +1,12 @@
 import java.util.ArrayList;
 
 public class Bishop extends piece{
+
     public Bishop(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
+        setUpgradePiece("unupgraded");
     }
+
     @Override
     public String getType() {
         return "bishop";
@@ -158,6 +161,13 @@ public class Bishop extends piece{
 
                 break;
             }
+        }
+        if (this.getUpgradePiece().equals("upgraded")) {
+            System.out.println("UPGRADED!");
+            moves.add(new Coordinates(x, y - 1));
+            moves.add(new Coordinates(x + 1, y));
+            moves.add(new Coordinates(x - 1, y));
+            moves.add(new Coordinates(x, y + 1));
         }
         if (this.getOwner() == 0) {
             moves = friendBlock(moves, whitePositions);

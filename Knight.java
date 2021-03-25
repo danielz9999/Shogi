@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class Knight extends piece {
     public Knight(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
+        setUpgradePiece("golden");
     }
 
     @Override

@@ -1,8 +1,9 @@
-import javax.swing.*;
+import  javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+
 
 public class Board {
     JButton allButtons[][] = new TheButtons[9][9];
@@ -24,7 +25,7 @@ public class Board {
                 int l = i + 1;
                 int k = j + 1;
 
-                //vytvoří se 81 tlačítek, která jsou rozmístěna na plochu v 9x9 síti
+                //81 buttons are created which are sorted into a 9x9 grid
                 TheButtons buttons = new TheButtons(i, j);
                 allButtons[i][j] = buttons;
                 allSpaces[i][j] = new Space();
@@ -65,8 +66,11 @@ public class Board {
         standardSetup();
 
     }
-
+    //move function, moves a piece and executes all the necessary updating alongside it
     public void movePiece(piece movingPiece, int x, int y) {
+        if (allSpaces[x][y].getCurrentPiece().getType().equals("king")) {
+            gameEnd();
+        }
         //removal of the original position of the moving piece from the positions list
         if (movingPiece.getOwner() == 0) {
             for (int i = 0; i < whitePiecesPositions.size(); i++) {
@@ -109,6 +113,7 @@ public class Board {
         movingPiece.moveTo(x,y);
         allSpaces[x][y].changePiece(movingPiece);
         buttonUpdate(x,y);
+        //checks if the piece ended in an upgrade lane, if so, upgrades
         if (x < 3 && movingPiece.getOwner() == 0) {
             pieceUpgrade(allSpaces[x][y]);
         } else if (x > 5 && movingPiece.getOwner() == 1) {
@@ -145,6 +150,7 @@ public class Board {
             allButtons[x][y].setOpaque(true);
         }
     }
+    //make functions, create a piece on the corresponding coordinates, relfect it graphically, and log the coordinates into a list of positions
     public void makePawn(int owner, int x, int y) {
         allSpaces[x][y].changePiece(new Pawn(owner,x,y));
         buttonUpdate(x,y);
@@ -185,6 +191,7 @@ public class Board {
         buttonUpdate(x,y);
         pieceCreationLog(owner, x, y);
     }
+    //the standard starting pieces for a game of Shogi
     public void standardSetup() {
         for (int i = 0; i < 9; i++) {
             makePawn(0,6,i);
@@ -214,9 +221,85 @@ public class Board {
         makeGoldenGeneral(0,8,5);
         makeKing(0,8,4);
     }
+    //upgrades the current piece of the space passed to it
     public void pieceUpgrade(Space p) {
-        System.out.println("UPGRADE TIME!");
+
+        //a lot of pieces can not be upgraded, those are filtered here
+        if (p.getCurrentPiece().getUpgradePiece().equals("non upgradable")) {
+            return;
+
+            //since the rook and bishop upgrade differently than all other pieces, they get a unique upgradePiece "unupgraded"
+        } else if (p.getCurrentPiece().getUpgradePiece().equals("unupgraded")) {
+
+            int input = JOptionPane.showConfirmDialog(null, "Upgrade this piece?", "Upgrade option", JOptionPane.YES_NO_OPTION);
+            if (input == 0) {
+                p.getCurrentPiece().setUpgradePiece("upgraded");
+            }
+            //all the remainging pieces upgrade into golden generals, this also includes automatic upgrading when pieces can not move further without it
+        } else if (p.getCurrentPiece().getUpgradePiece().equals("golden")) {
+            if (p.getCurrentPiece().getOwner() == 0 && p.getCurrentPiece().getX() < 2) {
+                if (p.getCurrentPiece().getType().equals("knight")) {
+                    p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
+                    buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
+                }
+                if (p.getCurrentPiece().getX() < 1) {
+                    if (p.getCurrentPiece().getType().equals("lancer")) {
+                        p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
+                        buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
+                    } else if (p.getCurrentPiece().getType().equals("pawn")) {
+                        p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
+                        buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
+                    }
+                }
+            } else if(p.getCurrentPiece().getOwner() == 1 && p.getCurrentPiece().getX() > 6) {
+                if (p.getCurrentPiece().getType().equals("knight")) {
+                    p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
+                    buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
+                }
+                if (p.getCurrentPiece().getX() > 7) {
+                    if (p.getCurrentPiece().getType().equals("lancer")) {
+                        p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
+                        buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
+                    } else if (p.getCurrentPiece().getType().equals("pawn")) {
+                        p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
+                        buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
+                    }
+                }
+            } else {
+            int input = JOptionPane.showConfirmDialog(null, "Upgrade this piece?", "Upgrade option", JOptionPane.YES_NO_OPTION);
+            if (input == 0) {
+                p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
+                buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
+            }
+            }
+        }
     }
+    //creates a popup which announces which player won, then ends the game when clicked on
+    public void gameEnd() {
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                allSpaces[i][j] = null;
+            }
+        }
+        JFrame frame = new JFrame();
+        JButton button = new JButton();
+        int player = g.currentTurn + 1;
+
+        button.setText("Player " + player + " wins!");
+        button.addActionListener(new ActionListener() {
+                                      @Override
+                                      public void actionPerformed(ActionEvent e) {
+                                          System.exit(0);
+                                      }
+                                  });
+        frame.add(button);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
+
+    }
+
     public void pieceCreationLog(int owner, int x, int y) {
         if (owner == 0) {
             whitePiecesPositions.add(new Coordinates(x,y));

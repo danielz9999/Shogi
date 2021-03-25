@@ -1,8 +1,10 @@
 import java.util.ArrayList;
 
 public class Pawn extends piece{
+
     public Pawn(int player, int xCor, int yCor) {
         super(player,xCor,yCor);
+        setUpgradePiece("golden");
     }
     @Override
     public String getType() {

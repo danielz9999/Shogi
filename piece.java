@@ -4,6 +4,7 @@ public class piece {
     private int x;
     private int y;
     private int owner;
+    private String upgradePiece;
 
     public piece(int player, int xCor, int yCor) {
         owner = player;
@@ -26,7 +27,12 @@ public class piece {
     public int getOwner() {
         return owner;
     }
-
+    public void setUpgradePiece(String s) {
+        upgradePiece = s;
+    }
+    public String getUpgradePiece() {
+        return upgradePiece;
+    }
     public ArrayList<Coordinates> getMoves(int x, int y, ArrayList<Coordinates> whitePositions, ArrayList<Coordinates> blackPositions) {
         return null;
     }

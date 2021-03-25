@@ -3,6 +3,7 @@ import java.util.ArrayList;
 public class SilverGeneral extends piece{
     public SilverGeneral(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
+        setUpgradePiece("golden");
     }
     @Override
     public String getType() {
