@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 public class GameRules {
-    int currentTurn;
+    private int currentTurn;
     public GameRules(){
         currentTurn = 0;
     }
@@ -17,5 +17,10 @@ public class GameRules {
         System.out.println("Move is not possible");
         return false;
     }
-
+    public int getCurrentTurn() {
+        return currentTurn;
+    }
+    public void setCurrentTurn(int a) {
+        currentTurn = a;
+    }
 }

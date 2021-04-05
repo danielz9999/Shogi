@@ -16,10 +16,7 @@ public class Lancer extends piece{
             ArrayList<Coordinates> moves = new ArrayList<Coordinates>();
             int Xless = x - 1;
             int breaker = 0;
-            if (Xless == 0) {
-                moves = null;
-                return  moves;
-            }
+
             for (int i = 0; i <= Xless; i++) {
                 int xAdjust = x - i - 1;
                 moves.add(new Coordinates(xAdjust,y));

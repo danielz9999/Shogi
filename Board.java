@@ -1,7 +1,6 @@
 import  javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 
@@ -18,6 +17,8 @@ public class Board {
     ArrayList<Coordinates> whitePiecesPositions = new ArrayList<Coordinates>();
     ArrayList<Coordinates> blackPiecesPositions = new ArrayList<Coordinates>();
 
+    ArrayList<piece> capturedByWhite = new ArrayList<>();
+    ArrayList<piece> capturedByBlack = new ArrayList<>();
 
     public Board() {
         for (int i = 0; i < 9; i++) {
@@ -34,13 +35,13 @@ public class Board {
                     @Override
                     public void actionPerformed(ActionEvent e) {
 
-                        if (moveList != null && g.isMovePossible(buttons.getA(), buttons.getB(), moveList, allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions).size()) && allSpaces[oldX][oldY].getCurrentPiece().getOwner() == g.currentTurn) {
+                        if (moveList != null && g.isMovePossible(buttons.getA(), buttons.getB(), moveList, allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions).size()) && allSpaces[oldX][oldY].getCurrentPiece().getOwner() == g.getCurrentTurn()) {
                             movePiece(allSpaces[oldX][oldY].getCurrentPiece(),buttons.getA(), buttons.getB());
                             moveList = null;
-                            if (g.currentTurn == 0) {
-                                g.currentTurn = 1;
-                            } else if (g.currentTurn == 1) {
-                                g.currentTurn = 0;
+                            if (g.getCurrentTurn() == 0) {
+                                g.setCurrentTurn(1);
+                            } else if (g.getCurrentTurn() == 1) {
+                                g.setCurrentTurn(0);
                             }
                         } else if (moveList != null && !g.isMovePossible(buttons.getA(), buttons.getB(), moveList, allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions).size()) && !allSpaces[buttons.getA()][buttons.getB()].getCurrentPiece().getType().equals("null")) {
                             oldX = buttons.getA();
@@ -61,6 +62,114 @@ public class Board {
 
                     }
                 });
+                buttons.addMouseListener(new MouseAdapter(){
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+
+                        if (SwingUtilities.isRightMouseButton(e)) {
+
+                            int turn = g.getCurrentTurn();
+                            if (turn == 0 && capturedByWhite.size() == 0) {
+                                JFrame frame = new JFrame();
+                                JButton button = new JButton();
+
+                                button.setText("There are no pieces to place");
+                                button.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                                    }
+                                });
+                                frame.add(button);
+                                frame.pack();
+                                frame.setLocationRelativeTo(null);
+                                frame.setVisible(true);
+                            } else if (turn == 1 && capturedByBlack.size() == 0) {
+                                JFrame frame = new JFrame();
+                                JButton button = new JButton();
+
+                                button.setText("There are no pieces to place");
+                                button.addActionListener(new ActionListener() {
+                                    @Override
+                                    public void actionPerformed(ActionEvent e) {
+                                        frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
+                                    }
+                                });
+                                frame.add(button);
+                                frame.pack();
+                                frame.setLocationRelativeTo(null);
+                                frame.setVisible(true);
+                            } else {
+                            JPanel panel = new JPanel();
+                            panel.add(new JLabel("Choose which captured piece to place"));
+                            DefaultComboBoxModel model = new DefaultComboBoxModel();
+                            if (turn == 0) {
+                                for (int i = 0; i < capturedByWhite.size(); i++){
+                                    model.addElement(capturedByWhite.get(i).getType());
+                                }
+                            } else if (turn == 1) {
+                                for (int i = 0; i < capturedByBlack.size(); i++){
+                                    model.addElement(capturedByBlack.get(i).getType());
+                                }
+                            }
+                            JComboBox comboBox = new JComboBox(model);
+                            panel.add(comboBox);
+                            int result = JOptionPane.showConfirmDialog(null, panel, "Choose a piece", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                            if (result == JOptionPane.OK_OPTION) {
+                                switch (comboBox.getSelectedItem().toString()) {
+                                    case "pawn":
+                                    makePawn(turn, buttons.getA(), buttons.getB());
+                                        break;
+                                    case "bishop":
+                                        makeBishop(turn, buttons.getA(), buttons.getB());
+                                        break;
+                                    case "gold":
+                                        makeGoldenGeneral(turn, buttons.getA(), buttons.getB());
+                                        break;
+                                    case "silver":
+                                        makeSilverGeneral(turn, buttons.getA(), buttons.getB());
+                                        break;
+                                    case "knight":
+                                        makeKnight(turn, buttons.getA(), buttons.getB());
+                                        break;
+                                    case "lancer":
+                                        makeLancer(turn, buttons.getA(), buttons.getB());
+                                        break;
+                                    case "rook":
+                                        makeRook(turn, buttons.getA(), buttons.getB());
+                                        break;
+                                }
+
+                                if (g.getCurrentTurn() == 0) {
+                                    for (int k = 0; k < capturedByWhite.size(); k++) {
+                                        if (capturedByWhite.get(k).getType().equals(comboBox.getSelectedItem())) {
+                                            capturedByWhite.remove(k);
+                                            break;
+                                        };
+                                    }
+                                    g.setCurrentTurn(1);
+                                } else if (g.getCurrentTurn() == 1) {
+                                    for (int k = 0; k < capturedByBlack.size(); k++) {
+                                        if (capturedByBlack.get(k).getType().equals(comboBox.getSelectedItem())) {
+                                            capturedByBlack.remove(k);
+                                            break;
+                                        };
+                                    }
+                                    g.setCurrentTurn(0);
+                                }
+                            }
+                            }
+                            System.out.println("RIGHT CLICK");
+                            System.out.println(capturedByWhite.get(0).getType());
+
+                        }
+
+                    }
+
+
+                });
+
             }
         }
         standardSetup();
@@ -101,6 +210,13 @@ public class Board {
                 break;
             }
         }
+        //Adding the taken piece to the list of captured pieces
+
+            if (allSpaces[x][y].getCurrentPiece().getOwner() == 0) {
+                capturedByBlack.add(allSpaces[x][y].getCurrentPiece());
+            } else if (allSpaces[x][y].getCurrentPiece().getOwner() == 1) {
+                capturedByWhite.add(allSpaces[x][y].getCurrentPiece());
+            }
 
         //adding the new position of the moved piece to the corresponding positions list
         if (movingPiece.getOwner() == 0) {
@@ -250,6 +366,12 @@ public class Board {
                         p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
                         buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
                     }
+                } else {
+                    int input = JOptionPane.showConfirmDialog(null, "Upgrade this piece?", "Upgrade option", JOptionPane.YES_NO_OPTION);
+                    if (input == 0) {
+                        p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
+                        buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
+                    }
                 }
             } else if(p.getCurrentPiece().getOwner() == 1 && p.getCurrentPiece().getX() > 6) {
                 if (p.getCurrentPiece().getType().equals("knight")) {
@@ -261,6 +383,12 @@ public class Board {
                         p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
                         buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
                     } else if (p.getCurrentPiece().getType().equals("pawn")) {
+                        p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
+                        buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
+                    }
+                } else {
+                    int input = JOptionPane.showConfirmDialog(null, "Upgrade this piece?", "Upgrade option", JOptionPane.YES_NO_OPTION);
+                    if (input == 0) {
                         p.changePiece(new GoldenGeneral(p.getCurrentPiece().getOwner(), p.getCurrentPiece().getX(), p.getCurrentPiece().getY()));
                         buttonUpdate(p.getCurrentPiece().getX(),p.getCurrentPiece().getY());
                     }
@@ -284,7 +412,7 @@ public class Board {
         }
         JFrame frame = new JFrame();
         JButton button = new JButton();
-        int player = g.currentTurn + 1;
+        int player = g.getCurrentTurn() + 1;
 
         button.setText("Player " + player + " wins!");
         button.addActionListener(new ActionListener() {
