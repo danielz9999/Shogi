@@ -1,12 +1,14 @@
+import javax.imageio.ImageIO;
 import  javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class Board {
-    JButton allButtons[][] = new TheButtons[9][9];
-    Space allSpaces[][] = new Space[9][9];
+    JButton[][] allButtons = new TheButtons[9][9];
+    Space[][] allSpaces = new Space[9][9];
 
     private ArrayList<Coordinates> moveList = null;
     GameRules g = new GameRules();
@@ -14,13 +16,29 @@ public class Board {
     private int oldX;
     private int oldY;
 
-    ArrayList<Coordinates> whitePiecesPositions = new ArrayList<Coordinates>();
-    ArrayList<Coordinates> blackPiecesPositions = new ArrayList<Coordinates>();
+    ArrayList<Coordinates> whitePiecesPositions = new ArrayList<>();
+    ArrayList<Coordinates> blackPiecesPositions = new ArrayList<>();
 
     ArrayList<piece> capturedByWhite = new ArrayList<>();
     ArrayList<piece> capturedByBlack = new ArrayList<>();
 
-    public Board() {
+    int whiteTime;
+    int blackTime;
+    boolean timerless = false;
+    Image img = null;
+
+    public Board(int timeOne, int timeTwo, int player) {
+        whiteTime = timeOne;
+        blackTime = timeTwo;
+        if (player == 1) {
+            g.setCurrentTurn(1);
+        }
+        CountTimer tim = new CountTimer(whiteTime,blackTime,g.getCurrentTurn());
+        if (whiteTime == 0 || blackTime == 0) {
+            timerless = true;
+        }
+        tim.start();
+
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 int l = i + 1;
@@ -31,44 +49,50 @@ public class Board {
                 allButtons[i][j] = buttons;
                 allSpaces[i][j] = new Space();
                 allSpaces[i][j].changePiece(new NullPiece(i,j));
-                buttons.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+                //The left-click mouse event listener
+                buttons.addActionListener(e -> {
+                    if ((tim.getWhiteTime() <= 0 || tim.getBlackTime() <= 0) && !timerless) {
+                        gameEnd(true);
+                    }
 
-                        if (moveList != null && g.isMovePossible(buttons.getA(), buttons.getB(), moveList, allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions).size()) && allSpaces[oldX][oldY].getCurrentPiece().getOwner() == g.getCurrentTurn()) {
-                            movePiece(allSpaces[oldX][oldY].getCurrentPiece(),buttons.getA(), buttons.getB());
-                            moveList = null;
-                            if (g.getCurrentTurn() == 0) {
-                                g.setCurrentTurn(1);
-                            } else if (g.getCurrentTurn() == 1) {
-                                g.setCurrentTurn(0);
-                            }
-                        } else if (moveList != null && !g.isMovePossible(buttons.getA(), buttons.getB(), moveList, allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions).size()) && !allSpaces[buttons.getA()][buttons.getB()].getCurrentPiece().getType().equals("null")) {
-                            oldX = buttons.getA();
-                            oldY = buttons.getB();
-                            moveList = allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions);
-
-                        } else if (moveList == null && !allSpaces[buttons.getA()][buttons.getB()].getCurrentPiece().getType().equals("null")) {
-                            oldX = buttons.getA();
-                            oldY = buttons.getB();
-                            moveList = allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions);
+                    if (moveList != null && g.isMovePossible(buttons.getA(), buttons.getB(), moveList, allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions).size()) && allSpaces[oldX][oldY].getCurrentPiece().getOwner() == g.getCurrentTurn()) {
+                        movePiece(allSpaces[oldX][oldY].getCurrentPiece(),buttons.getA(), buttons.getB());
+                        moveList = null;
+                        if (g.getCurrentTurn() == 0) {
+                            g.setCurrentTurn(1);
+                            tim.changeTurn();
+                        } else if (g.getCurrentTurn() == 1) {
+                            g.setCurrentTurn(0);
+                            tim.changeTurn();
                         }
+                    } else if (moveList != null && !g.isMovePossible(buttons.getA(), buttons.getB(), moveList, allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions).size()) && !allSpaces[buttons.getA()][buttons.getB()].getCurrentPiece().getType().equals("null")) {
+                        oldX = buttons.getA();
+                        oldY = buttons.getB();
+                        moveList = allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions);
 
-                        else if (allSpaces[buttons.getA()][buttons.getB()].getCurrentPiece().getType().equals("null")) {
-                            moveList = null;
+                    } else if (moveList == null && !allSpaces[buttons.getA()][buttons.getB()].getCurrentPiece().getType().equals("null")) {
+                        oldX = buttons.getA();
+                        oldY = buttons.getB();
+                        moveList = allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions);
+                    }
 
-                        }
-
+                    else if (allSpaces[buttons.getA()][buttons.getB()].getCurrentPiece().getType().equals("null")) {
+                        moveList = null;
 
                     }
+
+
                 });
+                //the right-click mouse event listener
                 buttons.addMouseListener(new MouseAdapter(){
 
                     @Override
                     public void mouseReleased(MouseEvent e) {
 
                         if (SwingUtilities.isRightMouseButton(e)) {
-
+                            if ((tim.getWhiteTime() <= 0 || tim.getBlackTime() <= 0) && !timerless) {
+                                gameEnd(true);
+                            }
                             int turn = g.getCurrentTurn();
                             if (turn == 0 && capturedByWhite.size() == 0) {
                                 JFrame frame = new JFrame();
@@ -149,6 +173,7 @@ public class Board {
                                         };
                                     }
                                     g.setCurrentTurn(1);
+                                    tim.changeTurn();
                                 } else if (g.getCurrentTurn() == 1) {
                                     for (int k = 0; k < capturedByBlack.size(); k++) {
                                         if (capturedByBlack.get(k).getType().equals(comboBox.getSelectedItem())) {
@@ -157,6 +182,7 @@ public class Board {
                                         };
                                     }
                                     g.setCurrentTurn(0);
+                                    tim.changeTurn();
                                 }
                             }
                             }
@@ -178,7 +204,7 @@ public class Board {
     //move function, moves a piece and executes all the necessary updating alongside it
     public void movePiece(piece movingPiece, int x, int y) {
         if (allSpaces[x][y].getCurrentPiece().getType().equals("king")) {
-            gameEnd();
+            gameEnd(false);
         }
         //removal of the original position of the moving piece from the positions list
         if (movingPiece.getOwner() == 0) {
@@ -236,34 +262,125 @@ public class Board {
             pieceUpgrade(allSpaces[x][y]);
         }
     }
-    public void buttonUpdate(int x, int y) {
+    public void buttonUpdate(int x, int y)  {
         if (allSpaces[x][y].getCurrentPiece().getType().equals("pawn")) {
-            allButtons[x][y].setBackground(Color.BLACK);
-            allButtons[x][y].setOpaque(true);
+
+            try {
+                if (allSpaces[x][y].getCurrentPiece().getOwner() == 0) {
+                    img = ImageIO.read(getClass().getResource("images/pawnW.png"));
+                } else if (allSpaces[x][y].getCurrentPiece().getOwner() == 1) {
+                    img = ImageIO.read(getClass().getResource("images/pawnB.png"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            allButtons[x][y].setIcon(new ImageIcon(img));
+
+
         } else if (allSpaces[x][y].getCurrentPiece().getType().equals("null")) {
-            allButtons[x][y].setBackground(Color.RED);
-            allButtons[x][y].setOpaque(true);
+
+            allButtons[x][y].setIcon(null);
+
         } else if (allSpaces[x][y].getCurrentPiece().getType().equals("knight")) {
-            allButtons[x][y].setBackground(Color.BLUE);
-            allButtons[x][y].setOpaque(true);
+
+            try {
+                if (allSpaces[x][y].getCurrentPiece().getOwner() == 0) {
+                    img = ImageIO.read(getClass().getResource("images/knightW.png"));
+                } else if (allSpaces[x][y].getCurrentPiece().getOwner() == 1) {
+                    img = ImageIO.read(getClass().getResource("images/knightB.png"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            allButtons[x][y].setIcon(new ImageIcon(img));
         } else if (allSpaces[x][y].getCurrentPiece().getType().equals("silver")) {
-            allButtons[x][y].setBackground(Color.GRAY);
-            allButtons[x][y].setOpaque(true);
+
+            try {
+                if (allSpaces[x][y].getCurrentPiece().getOwner() == 0) {
+                    img = ImageIO.read(getClass().getResource("images/silverW.png"));
+                } else if (allSpaces[x][y].getCurrentPiece().getOwner() == 1) {
+                    img = ImageIO.read(getClass().getResource("images/silverB.png"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            allButtons[x][y].setIcon(new ImageIcon(img));
         } else if (allSpaces[x][y].getCurrentPiece().getType().equals("gold")) {
-            allButtons[x][y].setBackground(Color.YELLOW);
-            allButtons[x][y].setOpaque(true);
+
+            try {
+                if (allSpaces[x][y].getCurrentPiece().getOwner() == 0) {
+                    img = ImageIO.read(getClass().getResource("images/goldW.png"));
+                } else if (allSpaces[x][y].getCurrentPiece().getOwner() == 1) {
+                    img = ImageIO.read(getClass().getResource("images/goldB.png"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            allButtons[x][y].setIcon(new ImageIcon(img));
         } else if (allSpaces[x][y].getCurrentPiece().getType().equals("king")) {
-            allButtons[x][y].setBackground(Color.PINK);
-            allButtons[x][y].setOpaque(true);
+
+            try {
+                if (allSpaces[x][y].getCurrentPiece().getOwner() == 0) {
+                    img = ImageIO.read(getClass().getResource("images/kingW.png"));
+                } else if (allSpaces[x][y].getCurrentPiece().getOwner() == 1) {
+                    img = ImageIO.read(getClass().getResource("images/kingB.png"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            allButtons[x][y].setIcon(new ImageIcon(img));
         } else if (allSpaces[x][y].getCurrentPiece().getType().equals("lancer")) {
-            allButtons[x][y].setBackground(Color.ORANGE);
-            allButtons[x][y].setOpaque(true);
+
+            try {
+                if (allSpaces[x][y].getCurrentPiece().getOwner() == 0) {
+                    img = ImageIO.read(getClass().getResource("images/lancerW.png"));
+                } else if (allSpaces[x][y].getCurrentPiece().getOwner() == 1) {
+                    img = ImageIO.read(getClass().getResource("images/lancerB.png"));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            allButtons[x][y].setIcon(new ImageIcon(img));
         } else if (allSpaces[x][y].getCurrentPiece().getType().equals("rook")) {
-            allButtons[x][y].setBackground(Color.DARK_GRAY);
-            allButtons[x][y].setOpaque(true);
+
+            try {
+                if (allSpaces[x][y].getCurrentPiece().getOwner() == 0) {
+                    if (allSpaces[x][y].getCurrentPiece().getUpgradePiece().equals("upgraded")) {
+                        img = ImageIO.read(getClass().getResource("images/rookUW.png"));
+                    } else {
+                        img = ImageIO.read(getClass().getResource("images/rookW.png"));
+                    }
+                } else if (allSpaces[x][y].getCurrentPiece().getOwner() == 1) {
+                    if (allSpaces[x][y].getCurrentPiece().getUpgradePiece().equals("upgraded")) {
+                        img = ImageIO.read(getClass().getResource("images/rookUB.png"));
+                    } else {
+                        img = ImageIO.read(getClass().getResource("images/rookB.png"));
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            allButtons[x][y].setIcon(new ImageIcon(img));
         } else if (allSpaces[x][y].getCurrentPiece().getType().equals("bishop")) {
-            allButtons[x][y].setBackground(Color.GREEN);
-            allButtons[x][y].setOpaque(true);
+
+            try {
+                if (allSpaces[x][y].getCurrentPiece().getOwner() == 0) {
+                    if (allSpaces[x][y].getCurrentPiece().getUpgradePiece().equals("upgraded")) {
+                        img = ImageIO.read(getClass().getResource("images/bishopUW.png"));
+                    } else {
+                        img = ImageIO.read(getClass().getResource("images/bishopW.png"));
+                    }
+                } else if (allSpaces[x][y].getCurrentPiece().getOwner() == 1) {
+                    if (allSpaces[x][y].getCurrentPiece().getUpgradePiece().equals("upgraded")) {
+                        img = ImageIO.read(getClass().getResource("images/bishopUB.png"));
+                    } else {
+                        img = ImageIO.read(getClass().getResource("images/bishopB.png"));
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            allButtons[x][y].setIcon(new ImageIcon(img));
         }
     }
     //make functions, create a piece on the corresponding coordinates, relfect it graphically, and log the coordinates into a list of positions
@@ -350,6 +467,7 @@ public class Board {
             int input = JOptionPane.showConfirmDialog(null, "Upgrade this piece?", "Upgrade option", JOptionPane.YES_NO_OPTION);
             if (input == 0) {
                 p.getCurrentPiece().setUpgradePiece("upgraded");
+                buttonUpdate(p.getCurrentPiece().getX(), p.getCurrentPiece().getY());
             }
             //all the remainging pieces upgrade into golden generals, this also includes automatic upgrading when pieces can not move further without it
         } else if (p.getCurrentPiece().getUpgradePiece().equals("golden")) {
@@ -403,7 +521,7 @@ public class Board {
         }
     }
     //creates a popup which announces which player won, then ends the game when clicked on
-    public void gameEnd() {
+    public void gameEnd(boolean timeOut) {
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -413,8 +531,17 @@ public class Board {
         JFrame frame = new JFrame();
         JButton button = new JButton();
         int player = g.getCurrentTurn() + 1;
+        if (timeOut) {
+            if (player == 1) {
+                player++;
+            } else if (player == 2) {
+                player--;
+            }
+            button.setText("The time ran out! Player " + player + " wins!");
+        } else {
+            button.setText("Player " + player + " wins!");
+        }
 
-        button.setText("Player " + player + " wins!");
         button.addActionListener(new ActionListener() {
                                       @Override
                                       public void actionPerformed(ActionEvent e) {
