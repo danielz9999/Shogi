@@ -129,6 +129,8 @@ public class Rook extends piece{
         } else if (this.getOwner() == 1) {
             moves = friendBlock(moves, blackPositions);
         }
+        moves = outOfBoundsFilter(moves);
+        moves = nullifier(moves);
         return moves;
     }
 }

@@ -25,7 +25,15 @@ public class King extends piece{
             moves.add(new Coordinates(x,Ymore));
             moves.add(new Coordinates(Xmore,Yless));
             moves.add(new Coordinates(Xmore,Ymore));
-            moves = friendBlock(moves, whitePositions);
+            if (this.getOwner() == 0) {
+                moves = friendBlock(moves, whitePositions);
+            } else if (this.getOwner() == 1) {
+                moves = friendBlock(moves, blackPositions);
+            }
+
+
+            moves = outOfBoundsFilter(moves);
+            moves = nullifier(moves);
             return moves;
 
 

@@ -25,11 +25,11 @@ public class Graphics {
 
         JButton exit = new JButton();
         JButton play = new JButton();
-        JButton instructions = new JButton();
+
         frame.setSize(250,200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-
+        
         play.setText("Play");
         play.addActionListener(new ActionListener() {
             @Override
@@ -80,13 +80,9 @@ public class Graphics {
         });
         exit.setAlignmentX(frame.getContentPane().CENTER_ALIGNMENT);
 
-        instructions.setText("Instructions");
-        instructions.setAlignmentX(frame.getContentPane().CENTER_ALIGNMENT);
 
-        frame.getContentPane().add(Box.createRigidArea(new Dimension(0,10)));
+        frame.getContentPane().add(Box.createRigidArea(new Dimension(0,35)));
         frame.getContentPane().add(play);
-        frame.getContentPane().add(Box.createRigidArea(new Dimension(0,25)));
-        frame.getContentPane().add(instructions);
         frame.getContentPane().add(Box.createRigidArea(new Dimension(0,25)));
         frame.getContentPane().add(exit);
 

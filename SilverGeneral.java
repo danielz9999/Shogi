@@ -23,6 +23,8 @@ public class SilverGeneral extends piece{
             moves.add(new Coordinates(Xless,Yless));
             moves.add(new Coordinates(Xless,y));
             moves = friendBlock(moves, whitePositions);
+            moves = outOfBoundsFilter(moves);
+            moves = nullifier(moves);
             return moves;
         } else {
             ArrayList<Coordinates> moves = new ArrayList<Coordinates>();
@@ -36,6 +38,8 @@ public class SilverGeneral extends piece{
             moves.add(new Coordinates(Xless,Yless));
             moves.add(new Coordinates(Xmore,y));
             moves = friendBlock(moves, blackPositions);
+            moves = outOfBoundsFilter(moves);
+            moves = nullifier(moves);
             return moves;
         }
 

@@ -36,6 +36,26 @@ public class piece {
     public ArrayList<Coordinates> getMoves(int x, int y, ArrayList<Coordinates> whitePositions, ArrayList<Coordinates> blackPositions) {
         return null;
     }
+    //checks whether a position inside the movelist is out of bounds and if so, removes it
+    public ArrayList<Coordinates> outOfBoundsFilter(ArrayList<Coordinates> p ) {
+        ArrayList<Integer> outside = new ArrayList<>();
+        for (int i = 0; i < p.size(); i++) {
+            if (p.get(i).firstHalf() < 0 || p.get(i).firstHalf() > 8 || p.get(i).secondHalf() < 0 || p.get(i).secondHalf() > 8) {
+                p.remove(i);
+                i--;
+            }
+        }
+
+        return  p;
+    }
+    //return null when passed empty ArrayLists, because somehow Arraylists with the size of 0 were not being counted as null
+    public ArrayList<Coordinates> nullifier(ArrayList<Coordinates> p) {
+        if (p.size() == 0) {
+            p = null;
+        }
+        return p;
+    }
+    //removes friendly positions from the movelist passed to it
     public ArrayList<Coordinates> friendBlock(ArrayList<Coordinates> moves, ArrayList<Coordinates> friendlyPositions) {
         ArrayList<Coordinates> finalMoves;
 

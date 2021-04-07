@@ -5,6 +5,7 @@ public class GameRules {
     public GameRules(){
         currentTurn = 0;
     }
+    //checks whether the position passed to it is part of the ArrayList of Coordinates, if so, returns true
     public boolean isMovePossible(int x, int y, ArrayList<Coordinates> p, int moves) {
 
         for (int i = 0; i < moves; i++) {

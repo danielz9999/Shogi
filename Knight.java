@@ -22,6 +22,8 @@ public class Knight extends piece {
             moves.add(new Coordinates(newX,Yless));
             moves.add(new Coordinates(newX,Ymore));
             moves = friendBlock(moves, whitePositions);
+            moves = outOfBoundsFilter(moves);
+            moves = nullifier(moves);
             return moves;
         } else {
             ArrayList<Coordinates> moves = new ArrayList<Coordinates>();
@@ -31,6 +33,8 @@ public class Knight extends piece {
             moves.add(new Coordinates(newX,Yless));
             moves.add(new Coordinates(newX,Ymore));
             moves = friendBlock(moves, blackPositions);
+            moves = outOfBoundsFilter(moves);
+            moves = nullifier(moves);
             return moves;
         }
 

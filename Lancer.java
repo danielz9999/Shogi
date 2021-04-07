@@ -39,6 +39,7 @@ public class Lancer extends piece{
             }
             moves = friendBlock(moves, whitePositions);
             System.out.println(moves.size());
+            moves = nullifier(moves);
             return moves;
         } else if (this.getOwner() == 1){
             ArrayList<Coordinates> moves = new ArrayList<Coordinates>();
@@ -70,7 +71,7 @@ public class Lancer extends piece{
                 }
             }
             moves = friendBlock(moves, blackPositions);
-            System.out.println(moves.size());
+            moves = nullifier(moves);
             return moves;
         }
         return null;

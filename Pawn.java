@@ -18,12 +18,14 @@ public class Pawn extends piece{
             int newX = x - 1;
             moves.add(new Coordinates(newX,y));
             moves = friendBlock(moves, whitePositions);
+            moves = nullifier(moves);
             return moves;
         } else {
             ArrayList<Coordinates> moves = new ArrayList<Coordinates>();
             int newX = x + 1;
             moves.add(new Coordinates(newX,y));
             moves = friendBlock(moves, blackPositions);
+            moves = nullifier(moves);
             return moves;
         }
 
