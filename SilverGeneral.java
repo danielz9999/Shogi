@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class SilverGeneral extends piece{
+public class SilverGeneral extends Piece {
     public SilverGeneral(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
         setUpgradePiece("golden");

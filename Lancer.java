@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Lancer extends piece{
+public class Lancer extends Piece {
     public Lancer(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
         setUpgradePiece("golden");

@@ -3,10 +3,8 @@ import  javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 
 
 public class Board {
@@ -22,8 +20,8 @@ public class Board {
     ArrayList<Coordinates> whitePiecesPositions = new ArrayList<>();
     ArrayList<Coordinates> blackPiecesPositions = new ArrayList<>();
 
-    ArrayList<piece> capturedByWhite = new ArrayList<>();
-    ArrayList<piece> capturedByBlack = new ArrayList<>();
+    ArrayList<Piece> capturedByWhite = new ArrayList<>();
+    ArrayList<Piece> capturedByBlack = new ArrayList<>();
 
     int whiteTime;
     int blackTime;
@@ -31,7 +29,7 @@ public class Board {
     Image img = null;
 
     ArrayList<int[]> states = new ArrayList<>();
-    int stateMatches = 0;
+
 
     public Board(int timeOne, int timeTwo, int player) {
         whiteTime = timeOne;
@@ -48,8 +46,7 @@ public class Board {
 
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                int l = i + 1;
-                int k = j + 1;
+
 
                 //81 buttons are created which are sorted into a 9x9 grid
                 TheButtons buttons = new TheButtons(i, j);
@@ -88,7 +85,7 @@ public class Board {
                         //checks whether the same board state has occurred enough times for a draw to occur
                         if (drawState(states)) {
                             gameEnd(false,true);
-                        };
+                        }
 
 
                     } else if (moveList != null && !g.isMovePossible(buttons.getA(), buttons.getB(), moveList, allSpaces[oldX][oldY].getCurrentPiece().getMoves(oldX,oldY,whitePiecesPositions,blackPiecesPositions).size()) && !allSpaces[buttons.getA()][buttons.getB()].getCurrentPiece().getType().equals("null")) {
@@ -141,7 +138,7 @@ public class Board {
                             if (turn == 0) {
                                 //tempW (or tempB) are temporary lists that mirror the capturedBy lists
                                 //They are created so we can safely delete from them without worrying about their progenitors
-                                ArrayList<piece> tempW = new ArrayList<>();
+                                ArrayList<Piece> tempW = new ArrayList<>();
                                 for (int q = 0; q < capturedByWhite.size(); q++) {
                                     tempW.add(capturedByWhite.get(q));
                                 }
@@ -192,7 +189,7 @@ public class Board {
                                     }
                                 }
                             } else if (turn == 1) {
-                                ArrayList<piece> tempB = new ArrayList<>();
+                                ArrayList<Piece> tempB = new ArrayList<>();
                                 for (int q = 0; q < capturedByBlack.size(); q++) {
                                     tempB.add(capturedByBlack.get(q));
                                 }
@@ -278,7 +275,7 @@ public class Board {
                                             capturedByWhite.remove(k);
                                             System.out.println("NUKING");
                                             break;
-                                        };
+                                        }
                                     }
                                     g.setCurrentTurn(1);
                                     tim.changeTurn();
@@ -287,7 +284,7 @@ public class Board {
                                         if (capturedByBlack.get(k).getType().equals(comboBox.getSelectedItem())) {
                                             capturedByBlack.remove(k);
                                             break;
-                                        };
+                                        }
                                     }
                                     g.setCurrentTurn(0);
                                     tim.changeTurn();
@@ -312,7 +309,7 @@ public class Board {
 
     }
     //move function, moves a piece and executes all the necessary updating alongside it
-    public void movePiece(piece movingPiece, int x, int y) {
+    public void movePiece(Piece movingPiece, int x, int y) {
         if (allSpaces[x][y].getCurrentPiece().getType().equals("king")) {
             gameEnd(false, false);
         }
@@ -718,13 +715,11 @@ public class Board {
         for (int i = 0; i < p.size(); i++) {
             for (int j = i + 1; j < p.size();j++) {
                 if (Arrays.equals(p.get(i),p.get(j))) {
-                    System.out.println("YOUVE DONT IT");
+
                     counts[i]++;
                     if (counts[i] > 3) {
                         return true;
                     }
-                } else {
-                    System.out.println("NO CIGAR");
                 }
             }
         }

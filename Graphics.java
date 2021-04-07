@@ -29,7 +29,7 @@ public class Graphics {
         frame.setSize(250,200);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-        
+
         play.setText("Play");
         play.addActionListener(new ActionListener() {
             @Override
@@ -109,8 +109,6 @@ public class Graphics {
         Board board = new Board(timeOne,timeTwo,player);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                int l = i + 1;
-                int k = j + 1;
                 playspace.add(board.allButtons[i][j]);
             }
         }

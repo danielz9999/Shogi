@@ -1,4 +1,4 @@
-public class NullPiece extends piece {
+public class NullPiece extends Piece {
 
     public NullPiece(int xCor, int yCor) {
         super(2,xCor,yCor);

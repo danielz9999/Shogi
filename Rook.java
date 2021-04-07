@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Rook extends piece{
+public class Rook extends Piece {
 
     public Rook(int player, int xCor, int yCor) {
         super(player, xCor, yCor);

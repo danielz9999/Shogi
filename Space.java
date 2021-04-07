@@ -1,12 +1,12 @@
 public class Space {
-    private piece currentPiece;
+    private Piece currentPiece;
     public Space() {
 
     }
-    public void changePiece(piece newPiece) {
+    public void changePiece(Piece newPiece) {
         currentPiece = newPiece;
     }
-    public piece getCurrentPiece() {
+    public Piece getCurrentPiece() {
         return currentPiece;
     }
 }

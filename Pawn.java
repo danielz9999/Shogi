@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Pawn extends piece{
+public class Pawn extends Piece {
 
     public Pawn(int player, int xCor, int yCor) {
         super(player,xCor,yCor);

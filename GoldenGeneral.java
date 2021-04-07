@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class GoldenGeneral extends piece{
+public class GoldenGeneral extends Piece {
     public GoldenGeneral(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
         setUpgradePiece("non upgradable");

@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class King extends piece{
+public class King extends Piece {
     public King(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
         setUpgradePiece("non upgradable");

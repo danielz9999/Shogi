@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class Bishop extends piece{
+public class Bishop extends Piece {
 
     public Bishop(int player, int xCor, int yCor) {
         super(player, xCor, yCor);
